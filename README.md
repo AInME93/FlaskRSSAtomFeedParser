@@ -51,11 +51,11 @@ Built With
 ===
 
 Python 3.6  
-[Flask](http://flask.pocoo.org/docs/0.12/)
-[Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.3/)
-[Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/)
+[Flask](http://flask.pocoo.org/docs/0.12/)  
+[Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.3/)  
+[Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/)  
 [Universal feedparser](https://pypi.python.org/pypi/feedparser)  
-[Multiprocessing](https://docs.python.org/3/library/multiprocessing.html)
+[Multiprocessing](https://docs.python.org/3/library/multiprocessing.html)  
 
 
 Author
