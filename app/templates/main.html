@@ -7,10 +7,9 @@
     <div class="container">
         <div class="row">
         {% for e in feed_entries %}
-            <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1">
-                <h1><a href="{{e.TestEntryURL}}">{{ e.TestEntryTitle }}</a></h1>
-                    <h5>Published {{ e.TestEntryDate[:-15] }} ago</h5>
-                    <p>{{ e.TestEntrySummary|safe }}...</p>
+            <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-6 col-sm-offset-2  jumla-post-box jumla-bg-primary">
+                <h2 class="post-box-title"><a href="{{e.TestEntryURL}}">{{ e.TestEntryTitle }}</a><span class="post-box-published">Published {{ e.TestEntryDate[:-15] }}</span></h2>
+                    <p class="post-box-summary">{{ e.TestEntrySummary|safe }}...</p>
             </div>
         {% endfor %}
         </div>

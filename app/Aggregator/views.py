@@ -1,4 +1,4 @@
-# ########################################PARSER MODULE###################################################
+# ########################################PARSER MODULE################################################################
 # This module implements the main function of the application which is to parse feed urls stored in the database and
 # storing the entries found in them back in the database. Because the parsing is highly CPU-intensive, multiprocessing
 # will be implemented to allow for parallel parsing of several feed urls at a time.
@@ -20,8 +20,8 @@
 
 
 from flask import render_template
-from .. import db
-from app.Feeds.models import Feed, FeedEntry,FeedEntryTest
+from app.models import db
+from app.models import Feed, FeedEntry,FeedEntryTest
 from . import feeds
 
 from multiprocessing import Pool
@@ -33,49 +33,11 @@ import time,feedparser
 # FEEDS = Feed.query.all()  # List of dictionaries storing query results
 
 
-def parallelParse(obj):
-    '''
-    This function performs the main task of the module, parsing feeds stored in the db and saving them in a list before 
-    returning a list of lists of tuples containing feed entry details.
-    '''
-    parsed = []
-    d = feedparser.parse(obj.feedURL, modified= obj.feedModified)
-    modified = time.mktime(d.feed.get('modified_parsed', None))
-
-    if modified != obj.feedModified:
-        # Should create an object (possibly dictionary?) to append the new value of 'modified' to.
-
-        for entry in d.entries:
-            parsed.append(tuple((entry.title, entry.summary, entry.published, time.mktime(entry.published_parsed), entry.link,)))
-
-    return parsed
-
-
-def saveEntries(obj):
-    '''
-    For each parsed feed, for each entry in it, save the title/summary/date/epoch and url into the corresponding row
-    in the database table.
-    '''
-
-    for i in range(len(obj)):
-        for j in range(len(obj[i])):
-            newFeedEntry = FeedEntryTest(TestEntryTitle=obj[i][j][0],TestEntrySummary = obj[i][j][1][:200],
-                                         TestEntryDate=obj[i][j][2],
-                                         TestEntryTime=obj[i][j][3],
-                                         TestEntryURL=obj[i][j][4])
-            db.session.add(newFeedEntry)
-            db.session.commit()
-
-def updateModified(obj):
-     '''
-     Should add logic here to check the values of 'modified' stored in the object from parsing function and update them
-     in the 
-     '''
-
 @feeds.route('/')
 def home():
     feed_entries = FeedEntryTest.query.order_by(FeedEntryTest.TestEntryTime.desc()).all()
     return render_template("main.html", feed_entries=feed_entries)
+
 
 @feeds.route('/aggregate-now')
 def parseModule():
@@ -86,17 +48,69 @@ def parseModule():
 
     t2 = time.time()
     # Spawn a pool of workers and map the parsing function to run among them
-    pool = Pool(processes=1)
+    pool = Pool(processes=3)
     result = pool.map(parallelParse,(item for item in FEEDS))
-    print(time.time() - t2)
-
+    print("Parsing time: ", time.time() - t2)
+    print(result[1][1])
     saveEntries(result)
-
 
     feed_entries = FeedEntryTest.query.order_by(FeedEntryTest.TestEntryTime.desc()).all()
     return render_template("main.html", feed_entries = feed_entries)
 
 
+def parallelParse(obj):
+    '''
+    This function performs the main task of the module, parsing feeds stored in the db and saving them in a list before
+    returning a list of lists of tuples containing feed entry details.
+    '''
+    parsed = []
+    newmodified = []
+    d = feedparser.parse(obj.feedURL)
+    modified = time.mktime(d.feed.get('modified_parsed', None))
+
+
+    if modified != float(obj.feedModified):
+        newmodified.append(tuple((obj.feedURL, modified)))
+        for entry in d.entries:
+            parsed.append(tuple((entry.title, entry.summary, entry.published, time.mktime(entry.published_parsed), entry.link,)))
+
+    return parsed, newmodified
+
+
+def saveEntries(obj):
+    '''
+    For each parsed feed, for each entry in it, save the title/summary/date/epoch and url into the corresponding row
+    in the database table.
+    '''
+    print(obj[0])
+    # print('Length of result:', len(obj))
+    # print('Length of result:', len(obj[1]))
+    # print('Length of result:', len(obj[1][0]))
+    # print('Entry details:', obj[1][0][2])
+    # print('Entry Title:', obj[1][0][2][0])
+    # print('Entry Summ:', obj[1][0][2][1])
+    # print('Entry Date:', obj[1][0][2][2])
+    # print('Entry Time:', obj[1][0][2][3])
+    # print('Entry Url:', obj[1][0][2][4])
+
+    try:
+        for i in range(1, len(obj)):
+            for j in range(len(obj[i][0])):
+                newFeedEntry = FeedEntryTest(TestEntryTitle=obj[i][0][j][0],TestEntrySummary = obj[i][0][j][1][:200],
+                                             TestEntryDate=obj[i][0][j][2],
+                                             TestEntryTime=obj[i][0][j][3],
+                                             TestEntryURL=obj[i][0][j][4])
+                db.session.add(newFeedEntry)
+                db.session.commit()
+
+            feedUpdate = Feed.query.filter_by(feedURL = obj[i][1][0][0]).first()
+            feedUpdate.feedModified = obj[i][1][0][1]
+
+            print('Modified = ',obj[i][1][0][1])
+            db.session.commit()
+
+    except IndexError as ie:
+        print('List is empty, possibly because all feeds haven\'t been modified since they were last parsed.')
 
 '''
 class threadedParser(threading.Thread):
