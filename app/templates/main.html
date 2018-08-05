@@ -2,16 +2,60 @@
 {% extends "layouts/layout.html" %}
 
 {% block title %} Home{% endblock %}
+{% block loginstatus %}
+    <li> <a class="drop-down-item" href="/register">Sign Up</a></li>
+    <li> <a class="drop-down-item" href="/login">Log In</a> </li>
 
-{% block content %}
-    <div class="container">
-        <div class="row">
+{% endblock %}
+
+{% block postboxes %}
         {% for e in feed_entries %}
-            <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-6 col-sm-offset-2  jumla-post-box jumla-bg-primary">
-                <h2 class="post-box-title"><a href="{{e.TestEntryURL}}">{{ e.TestEntryTitle }}</a><span class="post-box-published">Published {{ e.TestEntryDate[:-15] }}</span></h2>
-                    <p class="post-box-summary">{{ e.TestEntrySummary|safe }}...</p>
+            <div class="col-md-4 col-sm-6" id="entry">
+                    <div class="single_blog_item" id ="{{e.id}}">
+
+                        <div class="blog_content">
+
+                            <a href="{{e.EntryURL}}"><h3>{{ e.EntryTitle }}</h3></a>
+
+                            <div class="expert">
+                                <div class="left-side text-left">
+                                    <p class="left_side">
+                                        <span class="clock"><i class="fa fa-clock-o"></i></span>
+                                        <span class="time">Published {{ e.EntryDate }}</span>
+                                        <a href="{{e.feed_url}}"><span class="admin"><i class="fa fa-user"></i> {{e.EntryFeedTitle}}</span></a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p class="blog_news_content">{{ e.EntrySummary|safe }}...</p>
+
+                        </div>
+                        <div class="row">
+                            <div class="post_buttons">
+                                <div class="col-md-2 col-sm-3 col-xs-3"><a href="{{e.EntryURL}}">
+                                    <i class="fab fa-readme" data-toggle="tooltip" title="Read more." dataplacement="top"></i></a>
+                                </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-3">
+                                    <i class="far fa-star" data-toggle="tooltip" title="Like this post." dataplacement="top" onclick="UpVoteCounter()"><sup id="PostVoteCounter">0</sup></i>
+                                </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-3">
+                                    <i class="far fa-bookmark" data-toggle="tooltip" title="Save for later reading." dataplacement="top"><sup id="PostSavesCounter">0</sup></i>
+                                </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-3">
+                                    <i class="far fa-flag" data-toggle="tooltip" title="Flag content." dataplacement="top"><sup id="PostFlagsCounter">0</sup></i>
+                                </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-3">
+                                    <i class="fas fa-share-alt" data-toggle="tooltip" title="Share with friends." dataplacement="top"><sup id="PostSharesCounter">0</sup></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
             </div>
+
         {% endfor %}
-        </div>
-    </div>
 {% endblock %}

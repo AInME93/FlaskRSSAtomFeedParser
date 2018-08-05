@@ -7,8 +7,13 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:cantcrackthis123@localhost/NewRSSApp'
     SECRET_KEY = 'reallydifficulttoguesskey313455664'
+
     SECURITY_REGISTERABLE = True
     SECURITY_PASSWORD_SALT = 'fhasdgihwntlgy8f'
+    SECURITY_REGISTER_USER_TEMPLATE = 'security/register.html'
+    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
+    SECURITY_POST_LOGIN_VIEW =  '/feeds'
+    SECURITY_POST_LOGOUT_VIEW = '/'
 
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587

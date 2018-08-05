@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+{% block content %}
+{% include "security/_messages.html" %}
+
+
+<section id="userform">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4 formcontainer">
+
+                    <form action="{{ url_for_security('login') }}" method="POST" name="login_form" class="form">
+                        <div class="form-group">
+                            <h3 class="form_labels">{{ _('Sign In') }}</h3>
+                        </div>
+
+                        {{ login_user_form.hidden_tag() }}
+                        <div class="form-group">
+                            {{login_user_form.email(class='form-control', placeholder='email address') }}
+                        </div>
+
+
+                        <div class="form-group">
+                            {{ login_user_form.password(class='form-control', placeholder='password') }}
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="checkbox">
+                                    <label>
+                                        {{ login_user_form.remember }} {{ login_user_form.remember.label }}
+                                    </label>
+                                </div>
+                                {{login_user_form.submit(class='btn btn-primary pull-right') }}
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+</section>
+
+{% endblock %}

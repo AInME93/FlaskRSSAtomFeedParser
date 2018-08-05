@@ -21,8 +21,9 @@
 
 from flask import render_template
 from app.models import db
-from app.models import Feed, FeedEntry,FeedEntryTest
+from app.models import Feed, FeedEntry
 from . import feeds
+from flask_security import login_required
 
 from multiprocessing import Pool
 import time,feedparser
@@ -35,8 +36,9 @@ import time,feedparser
 
 @feeds.route('/')
 def home():
-    feed_entries = FeedEntryTest.query.order_by(FeedEntryTest.TestEntryTime.desc()).all()
+    feed_entries = FeedEntry.query.order_by(FeedEntry.EntryTime.desc()).all()
     return render_template("main.html", feed_entries=feed_entries)
+
 
 
 @feeds.route('/aggregate-now')
@@ -46,16 +48,19 @@ def parseModule():
     FEEDS = db.session.query(Feed).all()
     print(time.time() - t1)
 
-    t2 = time.time()
-    # Spawn a pool of workers and map the parsing function to run among them
-    pool = Pool(processes=3)
-    result = pool.map(parallelParse,(item for item in FEEDS))
-    print("Parsing time: ", time.time() - t2)
-    print(result[1][1])
-    saveEntries(result)
 
-    feed_entries = FeedEntryTest.query.order_by(FeedEntryTest.TestEntryTime.desc()).all()
+    # Spawn a pool of workers and map the parsing function to run among them
+    pool = Pool(processes=6)
+    result = pool.map(parallelParse,(item for item in FEEDS))
+    print("Parsing time: ", time.time() - t1)
+    pool.close()
+
+    t1 = time.time()
+    saveEntries(result)
+    t2 = time.time()
+    feed_entries = FeedEntry.query.order_by(FeedEntry.EntryTime.desc()).all()
     return render_template("main.html", feed_entries = feed_entries)
+
 
 
 def parallelParse(obj):
@@ -66,13 +71,24 @@ def parallelParse(obj):
     parsed = []
     newmodified = []
     d = feedparser.parse(obj.feedURL)
-    modified = time.mktime(d.feed.get('modified_parsed', None))
+    try:
+        modified = d.feed.published_parsed
+
+    except AttributeError:
+        modified= d.feed.get('modified_parsed', None)
+        print('Modified for feed ', obj.feedURL, ' is: ', modified)
+
+
+    modified = time.mktime(modified)
+    print('Modified for feed ', obj.feedURL, ' is: ', modified)
+
 
 
     if modified != float(obj.feedModified):
-        newmodified.append(tuple((obj.feedURL, modified)))
+        newmodified.append(tuple((obj.feedURL, modified, obj.feedTitle, obj.feedCategory)))
         for entry in d.entries:
-            parsed.append(tuple((entry.title, entry.summary, entry.published, time.mktime(entry.published_parsed), entry.link,)))
+            parsed.append(tuple((entry.title, entry.summary, entry.published, time.mktime(entry.published_parsed), entry.link, entry.id,)))
+
 
     return parsed, newmodified
 
@@ -82,31 +98,30 @@ def saveEntries(obj):
     For each parsed feed, for each entry in it, save the title/summary/date/epoch and url into the corresponding row
     in the database table.
     '''
-    print(obj[0])
-    # print('Length of result:', len(obj))
-    # print('Length of result:', len(obj[1]))
-    # print('Length of result:', len(obj[1][0]))
-    # print('Entry details:', obj[1][0][2])
-    # print('Entry Title:', obj[1][0][2][0])
-    # print('Entry Summ:', obj[1][0][2][1])
-    # print('Entry Date:', obj[1][0][2][2])
-    # print('Entry Time:', obj[1][0][2][3])
-    # print('Entry Url:', obj[1][0][2][4])
 
     try:
-        for i in range(1, len(obj)):
+        if obj[0][0]:
+            values = range(len(obj))
+
+        else:
+            values = range(1, len(obj))
+
+        for i in values:
             for j in range(len(obj[i][0])):
-                newFeedEntry = FeedEntryTest(TestEntryTitle=obj[i][0][j][0],TestEntrySummary = obj[i][0][j][1][:200],
-                                             TestEntryDate=obj[i][0][j][2],
-                                             TestEntryTime=obj[i][0][j][3],
-                                             TestEntryURL=obj[i][0][j][4])
-                db.session.add(newFeedEntry)
-                db.session.commit()
+                entryvar = FeedEntry.query.filter_by(EntryURL = obj[i][0][j][4]).first()
+
+
+                if entryvar is None:
+                    feeds_entries = Feed.query.filter_by(feedURL = obj[i][1][0][0]).first()
+                    newFeedEntry = FeedEntry(EntryFeedTitle=obj[i][1][0][2], EntryTitle=obj[i][0][j][0],EntrySummary = obj[i][0][j][1][:200],
+                                                 EntryDate=obj[i][0][j][2],
+                                                 EntryTime=obj[i][0][j][3],
+                                                 EntryURL=obj[i][0][j][4], EntryCategory=obj[i][1][0][3], origin_feed = feeds_entries)
+                    db.session.add(newFeedEntry)
+                    db.session.commit()
 
             feedUpdate = Feed.query.filter_by(feedURL = obj[i][1][0][0]).first()
             feedUpdate.feedModified = obj[i][1][0][1]
-
-            print('Modified = ',obj[i][1][0][1])
             db.session.commit()
 
     except IndexError as ie:
@@ -143,9 +158,9 @@ class threadedParser(threading.Thread):
                 db.session.commit()
 
                 for entry in d.entries:
-                    newFeedEntry = FeedEntryTest(TestEntryTitle=entry.title, TestEntrySummary=entry.summary_detail.value,
-                                                 TestEntryDate=entry.published,
-                                                 TestEntryTime=time.mktime(entry.published_parsed))
+                    newFeedEntry = FeedEntry(EntryTitle=entry.title, EntrySummary=entry.summary_detail.value,
+                                                 EntryDate=entry.published,
+                                                 EntryTime=time.mktime(entry.published_parsed))
                     db.session.add(newFeedEntry)
                     db.session.commit()
 
@@ -197,9 +212,9 @@ def parallelParsing():
             db.session.commit()
 
             for entry in d.entries:
-                newFeedEntry = FeedEntryTest(TestEntryTitle=entry.title, TestEntrySummary=entry.summary_detail.value,
-                                             TestEntryDate=entry.published,
-                                             TestEntryTime=time.mktime(entry.published_parsed))
+                newFeedEntry = FeedEntry(EntryTitle=entry.title, EntrySummary=entry.summary_detail.value,
+                                             EntryDate=entry.published,
+                                             EntryTime=time.mktime(entry.published_parsed))
                 db.session.add(newFeedEntry)
                 db.session.commit()
 

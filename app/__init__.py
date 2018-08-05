@@ -1,9 +1,14 @@
 from flask import Flask
+
 from config import config
 from flask_security import Security, SQLAlchemyUserDatastore
 from flask_mail import Mail
+from flask_sqlalchemy import SQLAlchemy
 
-from app.models import User,Role,db
+
+db = SQLAlchemy()
+
+from app.models import User,Role
 
 mail = Mail()
 
@@ -12,9 +17,11 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
+    from app.forms import ExtendedRegisterForm
+
     # Setup Flask-Security
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    security = Security(app, user_datastore)
+    security = Security(app, user_datastore, register_form=ExtendedRegisterForm)
 
     from .Aggregator import feeds as feeds_blueprint
     app.register_blueprint(feeds_blueprint)

@@ -1,0 +1,83 @@
+{% extends "layouts/alt_layout.html" %}
+
+{% block title %} Main Feeds{% endblock %}
+{% block loginstatus %}
+    <li> <a class="drop-down-item" href="/logout">Log Out</a> </li>
+    <li><a href="#menu-toggle" id="menu-toggle">Dashboard</a></li>
+{% endblock %}
+
+{% block sidebar %}
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <a href="#">
+                    My Jumla
+                </a>
+            </li>
+            <li>
+                <a href="/my-feeds">My Feeds Timeline</a>
+            </li>
+            <li>
+                <a href="/my-feeds-list">My Feeds List</a>
+            </li>
+            <li>
+                <a href="/saved-posts">My Saved Posts</a>
+            </li>
+            <hr style="width:75%; color:grey; margin: auto;">
+            <li>
+                <a href="/feeds-list">All Feeds</a>
+            </li>
+            <li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block list %}
+<div class="container" id="feeds_list">
+    <div class="row" style="margin-top: 30px;">
+                <div class="col-md-4">
+
+                    <!-- Begin panel group -->
+                    <div class="panel-group"  role="tablist" aria-multiselectable="true">
+
+                   {% for e in feeds %}
+
+                        <!-- panel 1 -->
+                        <div class="panel panel-default">
+                            <!--wrap panel heading in span to trigger image change as well as collapse -->
+                            <span class="side-tab" data-target="#tab1" data-toggle="tab" role="tab" aria-expanded="false">
+                                <div class="panel-heading" role="tab" id="heading{{e.id}}" data-toggle="collapse" data-parent="#accordion" href="#{{e.id}}"
+                                     aria-expanded="true" aria-controls="collapse{{e.feedURL}}">
+                                    {{e.feedTitle}} <a class="btn btn-primary no-collapse pull-right" onclick="subscribechange(btn-{{e.id}})" id="btn-{{e.id}}" href="/subscribe/{{e.id}}" style="margin-left:80px;">
+                                    Subscribe</a>
+                                </div>
+
+                            </span>
+
+                            <div id="{{e.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{e.id}}">
+                                <div class="panel-body">
+                                    {{e.feedDescription}}
+                                </div>
+                                <div class="expert">
+                                    <div>
+                                        <p style="padding:10px;margin-left:15px;">
+                                            <span class="clock"><i class="far fa-folder-open"></i></span>
+                                            <span class="time"> &nbsp Category &nbsp &nbsp | &nbsp &nbsp  </span>
+                                            <a href=""><span class="admin"> {{e.feedCategory}}</span></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Panel -->
+                   {% endfor %}
+
+                    </div> <!-- / panel-group -->
+                </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
