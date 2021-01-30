@@ -9,7 +9,7 @@ Flask-Script
 Flask-Security
 Flask-SQLAlchemy
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.10.1
 Mako==1.1.0
 MarkupSafe
 psycopg2-binary
