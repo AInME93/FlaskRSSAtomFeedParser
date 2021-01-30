@@ -7,7 +7,8 @@ from app import db
 # Define models
 roles_users = db.Table('roles_users',
         db.Column('user_id', db.Integer(), db.ForeignKey('User.id')),
-        db.Column('role_id', db.Integer(), db.ForeignKey('Role.id')))
+        db.Column('role_id', db.Integer(), db.ForeignKey('Role.id'))
+       )
 
 # Implement many-to-many relationship between users and feeds
 
@@ -32,13 +33,13 @@ saves = db.Table('saves',
 
 class Role(db.Model, RoleMixin):
     __tablename__ = "Role"
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True,autoincrement=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
 class User(db.Model, UserMixin):
     __tablename__ = "User"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
     email = db.Column(db.String(255), unique=True)
     username = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(255))
@@ -112,7 +113,7 @@ class User(db.Model, UserMixin):
 
 class Feed(db.Model):
     __tablename__ = "Feed"
-    id = db.Column(db.Integer(),primary_key=True,)
+    id = db.Column(db.Integer(),primary_key=True,autoincrement=True)
     feedTitle = db.Column(db.String(150))
     feedDescription = db.Column(db.String(255))
     feedURL = db.Column(db.String(255), unique = True)
@@ -136,7 +137,7 @@ class Feed(db.Model):
 
 class FeedEntry(db.Model):
     __tablename__ = "FeedEntry"
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True,autoincrement=True)
     EntryFeedTitle = db.Column(db.String(150))
     EntryTitle = db.Column(db.String(255))
     EntrySummary = db.Column(db.String(255))

@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_security.utils import hash_password
 
 from config import config
 from flask_security import Security, SQLAlchemyUserDatastore
@@ -32,6 +33,23 @@ def create_app(config_name):
     with app.app_context():
         db.init_app(app)
         mail.init_app(app)
+
+        # user_role = Role(name='user')
+        # author_role = Role(name='author')
+        # super_user_role = Role(name='admin')
+        # db.session.add(user_role)
+        # db.session.add(super_user_role)
+        # db.session.add(author_role)
+        # db.session.commit()
+
+        # super_user_role = db.session.query(Role).filter_by(id = 3).first()
+        #
+        # test_user = user_datastore.create_user(
+        #     username='RssAdmin',
+        #     email='admin@admin.com',
+        #     password=hash_password('admin'),
+        #     roles=[super_user_role]
+        # )
 
 
     return app

@@ -113,10 +113,15 @@ def saveEntries(obj):
 
                 if entryvar is None:
                     feeds_entries = Feed.query.filter_by(feedURL = obj[i][1][0][0]).first()
-                    newFeedEntry = FeedEntry(EntryFeedTitle=obj[i][1][0][2], EntryTitle=obj[i][0][j][0],EntrySummary = obj[i][0][j][1][:200],
-                                                 EntryDate=obj[i][0][j][2],
-                                                 EntryTime=obj[i][0][j][3],
-                                                 EntryURL=obj[i][0][j][4], EntryCategory=obj[i][1][0][3], origin_feed = feeds_entries)
+                    newFeedEntry = FeedEntry(EntryFeedTitle=obj[i][1][0][2],
+                                             EntryTitle=obj[i][0][j][0],
+                                             EntrySummary = obj[i][0][j][1][:200],
+                                             EntryDate=obj[i][0][j][2],
+                                             EntryTime=obj[i][0][j][3],
+                                             EntryURL=obj[i][0][j][4],
+                                             EntryCategory=obj[i][1][0][3],
+                                             origin_feed = feeds_entries)
+
                     db.session.add(newFeedEntry)
                     db.session.commit()
 
@@ -125,6 +130,7 @@ def saveEntries(obj):
             db.session.commit()
 
     except IndexError as ie:
+        print(ie)
         print('List is empty, possibly because all feeds haven\'t been modified since they were last parsed.')
 
 '''
