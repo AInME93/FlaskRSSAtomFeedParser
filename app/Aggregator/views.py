@@ -20,7 +20,7 @@
 
 
 from flask import render_template
-from app.models import db
+from app.models import db, votes
 from app.models import Feed, FeedEntry
 from . import feeds
 from flask_security import login_required
@@ -36,7 +36,15 @@ import time,feedparser
 
 @feeds.route('/')
 def home():
-    feed_entries = FeedEntry.query.order_by(FeedEntry.EntryTime.desc()).all()
+    feed_entries = db.session.query(FeedEntry, db.func.count(votes.c.entry_id).label('TotalVotes')).outerjoin(votes, votes.c.entry_id == FeedEntry.id)\
+        .order_by(FeedEntry.EntryTime.desc())\
+        .group_by(FeedEntry.id)\
+        .all()
+
+    for fe in feed_entries:
+        print(fe.FeedEntry.id, fe.FeedEntry.EntryTime, fe.TotalVotes)
+
+    # feed_entries = FeedEntry.query.order_by(FeedEntry.EntryTime.desc()).all()
     return render_template("main.html", feed_entries=feed_entries)
 
 
@@ -50,6 +58,7 @@ def parseModule():
 
 
     # Spawn a pool of workers and map the parsing function to run among them
+
     pool = Pool(processes=6)
     result = pool.map(parallelParse,(item for item in FEEDS))
     print("Parsing time: ", time.time() - t1)
