@@ -1,194 +1,81 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-   <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>{% block title %}{% endblock %}</title>
-
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-
-    <!--    Google Fonts-->
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
-
-    <!-- Custom Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Fruktur" rel="stylesheet">
-
-    <!--Fontawesome-->
-    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-
-
-    <!--Animated CSS-->
-    <link rel="stylesheet" type="text/css" href="/static/css/animate.min.css">
-
-
-    <!--Bootstrap Carousel-->
-    <link type="text/css" rel="stylesheet" href="/static/css/carousel.css" />
-    <link rel="stylesheet" href="/static/css/isotope/style.css">
-
-    <!--Main Stylesheet-->
-    <link href="/static/css/style.css" rel="stylesheet">
-
-    <!--Responsive Framework-->
-    <link href="/static/css/responsive.css" rel="stylesheet">
-
-</head>
+{% include "partials/headers/main_header.html" %}
 
 <body style ="padding-top:80px;" data-spy="scroll" data-target="#header">
 
 {% block navbar %}
-    <!--Start Header Section-->
-    <section id="header">
-        <div class="header-area">
-            <div class="header_menu text-center" data-spy="affix" id="nav">
-                <div class="container">
-                    <nav class="navbar navbar-default zero_mp ">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                            <a class="navbar-brand custom_navbar-brand" href="/feeds"><img src="/static/img/logo.png" alt=""></a>
-                        </div>
-                        <!--End of navbar-header-->
+<!--Start Header Section-->
+<section id="header">
+    <div class="header-area">
+        <div class="header_menu text-center" data-spy="affix" id="nav">
+            <div class="container">
+                <nav class="navbar navbar-default zero_mp ">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand custom_navbar-brand" href="/feeds"><img src="/static/img/logo.png" alt=""></a>
+                    </div>
+                    <!--End of navbar-header-->
 
-                        <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse zero_mp" id="bs-example-navbar-collapse-1">
-                            <ul class="nav navbar-nav navbar-right main_menu">
-                                <li class="active"><a href="/">Home <span class="sr-only">(current)</span></a></li>
-                                 {% block loginstatus %}{% endblock %}
-                            </ul>
-                        </div>
-                        <!-- /.navbar-collapse -->
-                    </nav>
-                    <!--End of nav-->
-                </div>
-                <!--End of container-->
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse zero_mp" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav navbar-right main_menu">
+                            <li class="active"><a href="/">Home <span class="sr-only">(current)</span></a></li>
+                             {% block loginstatus %}{% endblock %}
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </nav>
+                <!--End of nav-->
             </div>
-            <!--End of header menu-->
+            <!--End of container-->
         </div>
-        <!--end of header area-->
-        </section>
-        <!--End of Header Section-->
+        <!--End of header menu-->
+    </div>
+    <!--end of header area-->
+    </section>
+<!--End of Header Section-->
 {% endblock %}
 
 {% block content %}
 
-    {% block sidebar %} {% endblock %}
+{% block sidebar %} {% endblock %}
 
-    <!-- Page Content -->
-    <section id="blog">
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="container">
+<!-- Page Content -->
+<section id="blog">
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="container">
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="latest_blog text-center">
-                                <h2>Latest Posts</h2>
-                                <p>Newest posts from registered feeds.</p>
-                            </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="latest_blog text-center">
+                            <h2>Latest Posts</h2>
+                            <p>Newest posts from registered feeds.</p>
                         </div>
                     </div>
                 </div>
-                        <!--End of row-->
-                <div class="container">
-                    <div class="row">
-                  {% block postboxes %} {% endblock %}
-                    </div>
-                </div>
-
             </div>
+                    <!--End of row-->
+            <div class="container">
+                <div class="row">
+              {% block postboxes %} {% endblock %}
+                </div>
+            </div>
+
         </div>
-    </section>
-
-
+    </div>
+</section>
 
 {% endblock %}
 
+{% include "partials/actions/scroll_to_top.html" %}
 
-
-
-    <!--Scroll to top-->
-    <a href="#" id="back-to-top" title="Back to top">&uarr;</a>
-    <!--End of Scroll to top-->
-
-
-    <!--Isotope-->
-    <script src="/static/js/isotope/min/scripts-min.js"></script>
-    <script src="/static/js/isotope/cells-by-row.js"></script>
-    <script src="/static/js/isotope/isotope.pkgd.min.js"></script>
-    <script src="/static/js/isotope/packery-mode.pkgd.min.js"></script>
-    <script src="/static/js/isotope/scripts.js"></script>
-
-
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <!-- <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js'></script>-->
-    <script src="/static/js/jquery.min.js"></script>
-
-    <!--Counter UP Waypoint-->
-    <script src="/static/js/waypoints.min.js"></script>
-
-    <!--Counter UP-->
-    <script src="/static/js/jquery.counterup.min.js"></script>
-
-    <script>
-        //for counter up
-        $('.counter').counterUp({
-            delay: 10,
-            time: 1000
-        });
-    </script>
-
-    <!-- jQuery -->
-    <script src="/static/js/jquery.min.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="/static/js/bootstrap.min.js"></script>
-
-    <!--JQuery Click to Scroll down with Menu-->
-    <script src="/static/js/jquery.localScroll.min.js"></script>
-    <script src="/static/js/jquery.scrollTo.min.js"></script>
-
-    <!--WOW With Animation-->
-    <script src="/static/js/wow.min.js"></script>
-
-    <!--WOW Activated-->
-    <script>
-        new WOW().init();
-    </script>
-
-    <!-- Script to run tooltips-->
-    <script>
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-    </script>
-
-        <!-- Menu Toggle Script -->
-    <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    </script>
-
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/static/js/bootstrap.min.js"></script>
-
-    <!-- Custom JavaScript-->
-    <script src="/static/js/main.js"></script>
+{% include "partials/scripts/main_scripts.html" %}
 
 </body>
 </html>

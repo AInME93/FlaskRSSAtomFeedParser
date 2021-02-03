@@ -1,0 +1,66 @@
+    <!--Isotope-->
+    <script src="/static/js/isotope/min/scripts-min.js"></script>
+    <script src="/static/js/isotope/cells-by-row.js"></script>
+    <script src="/static/js/isotope/isotope.pkgd.min.js"></script>
+    <script src="/static/js/isotope/packery-mode.pkgd.min.js"></script>
+    <script src="/static/js/isotope/scripts.js"></script>
+
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!-- <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js'></script>-->
+    <script src="/static/js/jquery.min.js"></script>
+
+    <!--Counter UP Waypoint-->
+    <script src="/static/js/waypoints.min.js"></script>
+
+    <!--Counter UP-->
+    <script src="/static/js/jquery.counterup.min.js"></script>
+
+    <script>
+        //for counter up
+        $('.counter').counterUp({
+            delay: 10,
+            time: 1000
+        });
+    </script>
+
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!--JQuery Click to Scroll down with Menu-->
+    <script src="/static/js/jquery.localScroll.min.js"></script>
+    <script src="/static/js/jquery.scrollTo.min.js"></script>
+
+    <!--WOW With Animation-->
+    <script src="/static/js/wow.min.js"></script>
+
+    <!--WOW Activated-->
+    <script>
+        new WOW().init();
+    </script>
+
+    <!-- Script to run tooltips-->
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    </script>
+
+        <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+    <!-- Custom JavaScript-->
+    <script src="/static/js/main.js"></script>
+
+    {% block endjs %}
+
+    <!-- Additional Scripts -->
+
+    {% endblock %}

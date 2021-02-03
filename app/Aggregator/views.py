@@ -91,13 +91,10 @@ def parallelParse(obj):
     modified = time.mktime(modified)
     print('Modified for feed ', obj.feedURL, ' is: ', modified)
 
-
-
     if modified != float(obj.feedModified):
         newmodified.append(tuple((obj.feedURL, modified, obj.feedTitle, obj.feedCategory)))
         for entry in d.entries:
             parsed.append(tuple((entry.title, entry.summary, entry.published, time.mktime(entry.published_parsed), entry.link, entry.id,)))
-
 
     return parsed, newmodified
 
@@ -197,9 +194,6 @@ class threadedParser(threading.Thread):
         q.join()
 
 '''
-
-
-
 
 
 """
