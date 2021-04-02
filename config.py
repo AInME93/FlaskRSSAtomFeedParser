@@ -22,6 +22,11 @@ class Config:
     MAIL_USERNAME = 'imranabdallah254@gmail.com'
     MAIL_PASSWORD = 'Gunners93@ChIll'
 
+    HOST = '0.0.0.0'
+    # HOST = '127.0.0.1'
+
+    PORT = '5000'
+
     @staticmethod
     def init_app(app):
         pass
